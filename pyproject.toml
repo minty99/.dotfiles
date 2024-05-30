@@ -1,0 +1,7 @@
+[tool.ruff]
+line-length = 120
+lint.ignore = [
+    'E402', # E402: module level import not at top of file
+    'E731', # E731: do not assign a lambda expression, use a def
+    'E741', # E741: ambiguous variable name
+]
