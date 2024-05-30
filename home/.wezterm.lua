@@ -7,37 +7,19 @@ local config = wezterm.config_builder()
 
 -- This is where you actually apply your config choices
 
--- color
-color_scheme = 'dimidium'
+-- Visual
+config.color_scheme = 'Snazzy (base16)'
+config.line_height = 1.1
+config.initial_rows = 36
+config.initial_cols = 120
 
--- visual
-config.font = wezterm.font('CaskaydiaMono Nerd Font')
-config.font_size = 18
-
-config.window_padding = {
-    left = '0.5cell',
-    right = '0.5cell',
-    top = '0cell',
-    bottom = '0cell',
-}
-
--- keymaps Copy & Paste
-table.insert( keymaps, { key = 'C', mods = 'SHIFT|CTRL', action =
-wezterm.action.CopyTo 'ClipboardAndPrimarySelection', })
-
-table.insert( keymaps, { key = 'V', mods = 'SHIFT|CTRL', action =
-wezterm.action.PasteFrom 'Clipboard', })
-
-table.insert( keymaps, { key = 'V', mods = 'SHIFT|CTRL', action =
-wezterm.action.PasteFrom 'PrimarySelection', })
-
-config.keys = {
-    {
-        key = 'Enter',
-        mods = 'ALT',
-        action = wezterm.action.DisableDefaultAssignment,
-    },
-}
+-- Open new wezterm window at (30%, 30%) of the active screen
+wezterm.on('gui-startup', function(cmd)
+  local active = wezterm.gui.screens()["active"]
+  local tab, pane, window = wezterm.mux.spawn_window(cmd or {
+    position = { x = active["width"] * 0.3, y = active["height"] * 0.3, },
+  })
+end)
 
 -- and finally, return the configuration to wezterm
 return config

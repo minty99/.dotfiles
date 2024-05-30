@@ -21,15 +21,6 @@ import subprocess
 
 from sys import stderr
 
-try:
-    from distutils.spawn import find_executable
-except ImportError:
-    # In some environments, distutils might not be available.
-    import sys
-
-    sys.stderr.write("WARNING: distutils not available\n")
-    find_executable = lambda _: False  # type: ignore
-
 
 def _wrap_colors(ansicode):
     return lambda msg: ansicode + str(msg) + "\033[0m"
@@ -43,13 +34,7 @@ YELLOW = _wrap_colors("\033[0;33m")
 CYAN = _wrap_colors("\033[0;36m")
 BLUE = _wrap_colors("\033[0;34m")
 
-if sys.version_info[0] >= 3:  # python3
-    unicode = lambda s, _: str(s)
-    from builtins import input
-else:  # python2
-    input = sys.modules["__builtin__"].raw_input
-
-################# BEGIN OF FIXME #################
+unicode = lambda s, _: str(s)
 
 
 def get_post_actions(args):
@@ -71,25 +56,7 @@ def get_post_actions(args):
         done """
     ]
 
-    post_actions += [
-        """#!/bin/bash
-        # validate neovim package installation on python2/3 and automatically install if missing
-        bash "scripts/install-neovim-py.sh"
-    """
-    ]
-
-    if find_executable("nvim"):
-        post_actions += [
-            {
-                "update": "nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'",
-                "none": "# (neovim update skipped)",
-            }["update" if not args.skip_nvim else "none"]
-        ]
-
     return post_actions
-
-
-################# END OF FIXME #################
 
 
 def parsing_args():
@@ -97,7 +64,6 @@ def parsing_args():
     parser.add_argument(
         "-f", "--force", action="store_true", default=False, help="If set, it will override existing symbolic links"
     )
-    parser.add_argument("--skip-nvim", action="store_true", help="If set, do not update neovim plugins.")
     parser.add_argument("--symlink", action="store_true", help="If set, only create symlinks.")
 
     args = parser.parse_args()
@@ -123,51 +89,7 @@ def log_boxed(msg, color_fn=WHITE, use_bold=False, len_adjust=0):
 
 
 def makedirs(target, mode=511, exist_ok=False):
-    try:
-        os.makedirs(target, mode=mode)
-    except OSError as ex:  # py2 has no exist_ok=True
-        import errno
-
-        if ex.errno == errno.EEXIST and exist_ok:
-            pass
-        else:
-            raise
-
-
-def check_submodule():
-    # check if git submodules are loaded properly
-    stat = subprocess.check_output("git submodule status --recursive", shell=True, universal_newlines=True)
-    submodule_issues = [(l.split()[1], l[0]) for l in stat.split("\n") if len(l) and l[0] != " "]
-
-    if submodule_issues:
-        stat_messages = {"+": "needs update", "-": "not initialized", "U": "conflict!"}
-        for submodule_name, submodule_stat in submodule_issues:
-            log(
-                RED(
-                    "git submodule {name} : {status}".format(
-                        name=submodule_name, status=stat_messages.get(submodule_stat, "(Unknown)")
-                    )
-                )
-            )
-        log(RED(" you may run: $ git submodule update --init --recursive"))
-
-        log("")
-        log(YELLOW("Do you want to update submodules? (y/n) "), cr=False)
-        shall_we = input().lower() == "y"
-        if shall_we:
-            git_submodule_update_cmd = "git submodule update --init --recursive"
-            # git 2.8+ supports parallel submodule fetching
-            try:
-                git_version = str(subprocess.check_output("""git --version | awk '{print $3}'""", shell=True))
-                if git_version >= "2.8":
-                    git_submodule_update_cmd += " --jobs 8"
-            except Exception:
-                pass
-            log("Running: %s" % BLUE(git_submodule_update_cmd))
-            subprocess.call(git_submodule_update_cmd, shell=True)
-        else:
-            log(RED("Aborted."))
-            sys.exit(1)
+    os.makedirs(target, mode=mode, exist_ok=exist_ok)
 
 
 def create_symlink(args):
@@ -253,12 +175,13 @@ def main():
     current_dir = os.path.abspath(os.path.dirname(__file__))
     os.chdir(current_dir)
 
-    check_submodule()
+    os.system("git submodule update --init --recursive")
 
     args = parsing_args()
     create_symlink(args)
     if args.symlink:
         sys.exit()
+
     exit_code = run_post_actions(args)
 
     log("- Please restart shell (e.g. " + CYAN("`exec zsh`") + ") if necessary.")
