@@ -1,0 +1,4 @@
+add-highlighter global/ number-lines
+add-highlighter global/ wrap
+add-highlighter global/ show-matching
+

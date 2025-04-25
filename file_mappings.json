@@ -1,5 +1,4 @@
 {
-    "~/.bashrc": "home/.bashrc",
     "~/.sh_aliases": "home/.sh_aliases",
     "~/.gitconfig": "home/.gitconfig",
     "~/.gitexclude": "home/.gitexclude",
@@ -7,7 +6,8 @@
     "~/.zshenv": "home/.zshenv",
     "~/.zprofile": "home/.zprofile",
     "~/.p10k.zsh": "home/.p10k.zsh",
-    "~/.local/bin/dotfiles": "bin/dotfiles",
     "~/.tmux.conf": "home/.tmux.conf",
-    "~/.wezterm.lua": "home/.wezterm.lua"
+    "~/.wezterm.lua": "home/.wezterm.lua",
+    "~/.hammerspoon": "home/.hammerspoon",
+    "~/.config/kak/kakrc": "home/.config/kak/kakrc"
 }

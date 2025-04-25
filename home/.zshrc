@@ -29,7 +29,6 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-eval "$(pyenv init -)"
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 zinit light zsh-users/zsh-syntax-highlighting
@@ -39,6 +38,10 @@ zinit ice lucid wait'0'; zinit light joshskidmore/zsh-fzf-history-search
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+if [ -f ~/.sh_aliases ]; then
+    . ~/.sh_aliases
+fi
 
 export HISTFILE=~/.zsh_history
 export HISTSIZE=10000

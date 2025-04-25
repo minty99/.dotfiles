@@ -53,7 +53,3 @@ fi
 if [ -f "$HOME/.cargo/env" ]; then
   source "$HOME/.cargo/env"
 fi
-
-if [ -f "$HOME/.zshenv.local" ]; then
-  source "$HOME/.zshenv.local"
-fi
