@@ -1,9 +1,7 @@
 {
-    "~/.sh_aliases": "home/.sh_aliases",
     "~/.gitconfig": "home/.gitconfig",
     "~/.gitexclude": "home/.gitexclude",
     "~/.zshrc": "home/.zshrc",
-    "~/.zshenv": "home/.zshenv",
     "~/.zprofile": "home/.zprofile",
     "~/.p10k.zsh": "home/.p10k.zsh",
     "~/.tmux.conf": "home/.tmux.conf",

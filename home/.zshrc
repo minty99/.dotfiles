@@ -39,11 +39,12 @@ zinit ice lucid wait'0'; zinit light joshskidmore/zsh-fzf-history-search
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-if [ -f ~/.sh_aliases ]; then
-    . ~/.sh_aliases
-fi
-
-export HISTFILE=~/.zsh_history
-export HISTSIZE=10000
-export SAVEHIST=10000
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
 setopt appendhistory
+
+EDITOR='kak'
+VISUAL='kak'
+
+alias ll="ls -lah"
